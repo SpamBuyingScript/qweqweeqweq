@@ -1,0 +1,66 @@
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "AutoBuyGUI"
+
+local loadingFrame = Instance.new("Frame")
+loadingFrame.Size = UDim2.new(1, 0, 1, 0)
+loadingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+loadingFrame.BorderSizePixel = 0
+loadingFrame.Parent = gui
+
+local loadingText = Instance.new("TextLabel")
+loadingText.Size = UDim2.new(1, 0, 1, 0)
+loadingText.BackgroundTransparency = 1
+loadingText.TextColor3 = Color3.fromRGB(0, 255, 0)
+loadingText.TextScaled = true
+loadingText.Font = Enum.Font.GothamBold
+loadingText.Text = "Loading... 0%"
+loadingText.Parent = loadingFrame
+
+for i = 1, 100 do
+	loadingText.Text = "Loading... " .. i .. "%"
+	task.wait(0.10)
+end
+
+loadingFrame:Destroy()
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 250, 0, 120)
+frame.Position = UDim2.new(0.5, -125, 0.5, -60)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BorderSizePixel = 0
+frame.Parent = gui
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = frame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 40)
+title.BackgroundTransparency = 1
+title.Text = "ARISU SCRIPT\nAUTO BUY SCRIPT"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextSize = 18
+title.Font = Enum.Font.GothamBold
+title.TextWrapped = true
+title.Parent = frame
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0.9, 0, 0, 40)
+button.Position = UDim2.new(0.05, 0, 0.55, 0)
+button.Text = "Start Auto Buy"
+button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+button.TextColor3 = Color3.fromRGB(0, 0, 0)
+button.TextSize = 18
+button.Font = Enum.Font.GothamBold
+button.Parent = frame
+
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 8)
+buttonCorner.Parent = button
+
+button.MouseButton1Click:Connect(function()
+	print("🛒 Auto Buy started!")
+	button.Text = "Running..."
+	button.BackgroundColor3 = Color3.fromRGB(0, 200, 80)
+end)
