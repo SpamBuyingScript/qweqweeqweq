@@ -2,28 +2,6 @@ local player = game.Players.LocalPlayer
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "AutoBuyGUI"
 
-local loadingFrame = Instance.new("Frame")
-loadingFrame.Size = UDim2.new(1, 0, 1, 0)
-loadingFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-loadingFrame.BorderSizePixel = 0
-loadingFrame.Parent = gui
-
-local loadingText = Instance.new("TextLabel")
-loadingText.Size = UDim2.new(1, 0, 1, 0)
-loadingText.BackgroundTransparency = 1
-loadingText.TextColor3 = Color3.fromRGB(0, 255, 0)
-loadingText.TextScaled = true
-loadingText.Font = Enum.Font.GothamBold
-loadingText.Text = "Loading... 0%"
-loadingText.Parent = loadingFrame
-
-for i = 1, 100 do
-	loadingText.Text = "Loading... " .. i .. "%"
-	task.wait(0.10)
-end
-
-loadingFrame:Destroy()
-
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0, 250, 0, 120)
 frame.Position = UDim2.new(0.5, -125, 0.5, -60)
@@ -59,8 +37,33 @@ local buttonCorner = Instance.new("UICorner")
 buttonCorner.CornerRadius = UDim.new(0, 8)
 buttonCorner.Parent = button
 
+
 button.MouseButton1Click:Connect(function()
-	print("🛒 Auto Buy started!")
+	print("🛒 Auto Buy starting...")
+	button.Text = "Starting Auto Buy..."
+	button.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+
+	
+	local loadingLabel = Instance.new("TextLabel")
+	loadingLabel.Size = UDim2.new(1, 0, 0, 20)
+	loadingLabel.Position = UDim2.new(0, 0, 1, 0)
+	loadingLabel.BackgroundTransparency = 1
+	loadingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	loadingLabel.TextSize = 16
+	loadingLabel.Font = Enum.Font.Gotham
+	loadingLabel.Text = "Loading... 0%"
+	loadingLabel.Parent = frame
+
+	
+	for i = 1, 100 do
+		loadingLabel.Text = "LOADING PLEASE WAIT... " .. i .. "%"
+		task.wait(1.2)
+	end
+
+	
+	loadingLabel.Text = "✅ Auto Buy Started!"
 	button.Text = "Running..."
 	button.BackgroundColor3 = Color3.fromRGB(0, 200, 80)
+
+	print("✅ Auto Buy fully started!")
 end)
