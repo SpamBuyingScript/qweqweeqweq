@@ -112,6 +112,44 @@ local function spamText()
 		txt.BackgroundTransparency = 1
 		txt.Text = "Please wait a few seconds before trying to buy another brainrot"
 		txt.TextColor3 = Color3.fromRGB(255, 0, 0)
+		txt.TextSize = 18
+		txt.Font = Enum.Font.GothamBold
+		txt.TextTransparency = 0
+		txt.Parent = spamContainer
+
+		spamSound:Play()
+
+		-- Smooth fade out + disappear after 0.5s
+		task.spawn(function()
+			task.wait(0.3)
+			for i = 0, 1, 0.1 do
+				if txt and txt.Parent then
+					txt.TextTransparency = i
+				end
+				task.wait(0.90)
+			end
+			if txt and txt.Parent then
+				txt:Destroy()
+			end
+		end)
+
+		task.wait(0.2)
+	end
+end
+
+-- Button control
+button.MouseButton1Click:Connect(function()
+	if not spamming then
+		spamming = true
+		button.Text = "Stop Auto Buy"
+		button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		task.spawn(spamText)
+	else
+		spamming = false
+		button.Text = "Start Buy Buy"
+		button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+	end
+end)
 		txt.TextSize = 30
 		txt.Font = Enum.Font.GothamBold
 		txt.TextTransparency = 0
