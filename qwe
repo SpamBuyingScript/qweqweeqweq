@@ -16,7 +16,7 @@ corner.Parent = frame
 local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, 0, 0, 40)
 title.BackgroundTransparency = 1
-title.Text = "ARISU SCRIPT \n AUTO BUY SCRIPT"
+title.Text = "ARISU SCRIPT \n SPAM BUY SCRIPT"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 18
 title.Font = Enum.Font.GothamBold
@@ -26,7 +26,7 @@ title.Parent = frame
 local button = Instance.new("TextButton")
 button.Size = UDim2.new(0.9, 0, 0, 40)
 button.Position = UDim2.new(0.05, 0, 0.55, 0)
-button.Text = "Start Auto Buy"
+button.Text = "Start Spam Buy"
 button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
 button.TextColor3 = Color3.fromRGB(0, 0, 0)
 button.TextSize = 18
@@ -60,6 +60,96 @@ frame.InputBegan:Connect(function(input)
 		input.Changed:Connect(function()
 			if input.UserInputState == Enum.UserInputState.End then
 				dragging = false
+			end
+		end)
+	end
+end)
+
+frame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
+end)
+
+UIS.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
+end)
+
+-- Create spam text holder
+local spamFolder = Instance.new("Folder", gui)
+spamFolder.Name = "SpamTexts"
+
+local spamming = false
+
+-- ⚙️ SOUND SETUP
+local spamSound = Instance.new("Sound")
+spamSound.SoundId = "rbxassetid://2130284653"
+spamSound.Volume = 1
+spamSound.Parent = gui
+
+-- Create a container for spam messages
+local spamContainer = Instance.new("Frame")
+spamContainer.Size = UDim2.new(0, 500, 0, 300)
+spamContainer.Position = UDim2.new(0.5, -250, 0.8, -150)
+spamContainer.BackgroundTransparency = 1
+spamContainer.Parent = gui
+
+-- UIListLayout to organize spam messages bottom → top
+local layout = Instance.new("UIListLayout")
+layout.Padding = UDim.new(0, 4)
+layout.FillDirection = Enum.FillDirection.Vertical
+layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+layout.Parent = spamContainer
+
+-- Function to spawn spam messages
+local function spamText()
+	while spamming do
+		local txt = Instance.new("TextLabel")
+		txt.Size = UDim2.new(0, 400, 0, 25)
+		txt.BackgroundTransparency = 1
+		txt.Text = "Please wait a few seconds before trying to buy another brainrot"
+		txt.TextColor3 = Color3.fromRGB(255, 0, 0)
+		txt.TextSize = 18
+		txt.Font = Enum.Font.GothamBold
+		txt.TextTransparency = 0
+		txt.Parent = spamContainer
+
+		spamSound:Play()
+
+		-- Smooth fade out + disappear after 0.5s
+		task.spawn(function()
+			task.wait(0.3)
+			for i = 0, 1, 0.1 do
+				if txt and txt.Parent then
+					txt.TextTransparency = i
+				end
+				task.wait(0.90)
+			end
+			if txt and txt.Parent then
+				txt:Destroy()
+			end
+		end)
+
+		task.wait(0.2)
+	end
+end
+
+-- Button control
+button.MouseButton1Click:Connect(function()
+	if not spamming then
+		spamming = true
+		button.Text = "Stop Spam Buy"
+		button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		task.spawn(spamText)
+	else
+		spamming = false
+		button.Text = "Start Spam Buy"
+		button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+	end
+end)
 			end
 		end)
 	end
