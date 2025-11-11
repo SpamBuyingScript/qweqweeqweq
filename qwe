@@ -1,11 +1,15 @@
+-- 🟢 ARISU AUTO BUY SCRIPT with Progress Bar Loading (One-Time Start)
 local player = game.Players.LocalPlayer
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "AutoBuyGUI"
 
+---------------------------------------------------------
+-- 🟩 Main Frame
+---------------------------------------------------------
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 250, 0, 120)
-frame.Position = UDim2.new(0.5, -125, 0.5, -60)
-frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.Size = UDim2.new(0, 280, 0, 150)
+frame.Position = UDim2.new(0.5, -140, 0.5, -75)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.BorderSizePixel = 0
 frame.Parent = gui
 
@@ -13,20 +17,27 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 12)
 corner.Parent = frame
 
+---------------------------------------------------------
+-- 🟩 Title Text
+---------------------------------------------------------
 local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
+title.Size = UDim2.new(1, 0, 0, 50)
 title.BackgroundTransparency = 1
-title.Text = "ARISU SCRIPT \n SPAM BUY SCRIPT"
+title.Text = "ARISU SCRIPT\nAUTO BUY SCRIPT"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextSize = 18
+title.TextStrokeTransparency = 0.3
+title.TextSize = 20
 title.Font = Enum.Font.GothamBold
 title.TextWrapped = true
 title.Parent = frame
 
+---------------------------------------------------------
+-- 🟩 Start Button
+---------------------------------------------------------
 local button = Instance.new("TextButton")
-button.Size = UDim2.new(0.9, 0, 0, 40)
-button.Position = UDim2.new(0.05, 0, 0.55, 0)
-button.Text = "Start Spam Buy"
+button.Size = UDim2.new(0.9, 0, 0, 45)
+button.Position = UDim2.new(0.05, 0, 0.6, 0)
+button.Text = "Start Auto Buy"
 button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
 button.TextColor3 = Color3.fromRGB(0, 0, 0)
 button.TextSize = 18
@@ -37,244 +48,78 @@ local buttonCorner = Instance.new("UICorner")
 buttonCorner.CornerRadius = UDim.new(0, 8)
 buttonCorner.Parent = button
 
--- 🧲 Make the frame movable
-local UIS = game:GetService("UserInputService")
-local dragging, dragInput, dragStart, startPos
+---------------------------------------------------------
+-- ⚙️ Button Click: Show Loading Text + Progress Bar (Once Only)
+---------------------------------------------------------
+local clicked = false -- prevent multiple uses
 
-local function update(input)
-	local delta = input.Position - dragStart
-	frame.Position = UDim2.new(
-		startPos.X.Scale,
-		startPos.X.Offset + delta.X,
-		startPos.Y.Scale,
-		startPos.Y.Offset + delta.Y
-	)
-end
-
-frame.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = true
-		dragStart = input.Position
-		startPos = frame.Position
-
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
-	end
-end)
-
-frame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-		dragInput = input
-	end
-end)
-
-UIS.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		update(input)
-	end
-end)
-
--- Create spam text holder
-local spamFolder = Instance.new("Folder", gui)
-spamFolder.Name = "SpamTexts"
-
-local spamming = false
-
--- ⚙️ SOUND SETUP
-local spamSound = Instance.new("Sound")
-spamSound.SoundId = "rbxassetid://2130284653"
-spamSound.Volume = 1
-spamSound.Parent = gui
-
--- Create a container for spam messages
-local spamContainer = Instance.new("Frame")
-spamContainer.Size = UDim2.new(0, 500, 0, 300)
-spamContainer.Position = UDim2.new(0.5, -250, 0.8, -150)
-spamContainer.BackgroundTransparency = 1
-spamContainer.Parent = gui
-
--- UIListLayout to organize spam messages bottom → top
-local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 4)
-layout.FillDirection = Enum.FillDirection.Vertical
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-layout.Parent = spamContainer
-
--- Function to spawn spam messages
-local function spamText()
-	while spamming do
-		local txt = Instance.new("TextLabel")
-		txt.Size = UDim2.new(0, 400, 0, 25)
-		txt.BackgroundTransparency = 1
-		txt.Text = "Please wait a few seconds before trying to buy another brainrot"
-		txt.TextColor3 = Color3.fromRGB(255, 0, 0)
-		txt.TextSize = 18
-		txt.Font = Enum.Font.GothamBold
-		txt.TextTransparency = 0
-		txt.Parent = spamContainer
-
-		spamSound:Play()
-
-		-- Smooth fade out + disappear after 0.5s
-		task.spawn(function()
-			task.wait(0.3)
-			for i = 0, 1, 0.1 do
-				if txt and txt.Parent then
-					txt.TextTransparency = i
-				end
-				task.wait(0.90)
-			end
-			if txt and txt.Parent then
-				txt:Destroy()
-			end
-		end)
-
-		task.wait(0.2)
-	end
-end
-
--- Button control
 button.MouseButton1Click:Connect(function()
-	if not spamming then
-		spamming = true
-		button.Text = "Stop Spam Buy"
-		button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-		task.spawn(spamText)
-	else
-		spamming = false
-		button.Text = "Start Spam Buy"
-		button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+	if clicked then return end -- stop if already clicked
+	clicked = true
+
+	print("🛒 Auto Buy starting...")
+	button.Text = "Starting Auto Buy..."
+	button.BackgroundColor3 = Color3.fromRGB(255, 200, 0)
+	button.Active = false -- block further clicks
+
+	-- Create Loading Container
+	local loadingFrame = Instance.new("Frame")
+	loadingFrame.Size = UDim2.new(0.9, 0, 0, 25)
+	loadingFrame.Position = UDim2.new(0.05, 0, 0.9, 0)
+	loadingFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	loadingFrame.BorderSizePixel = 0
+	loadingFrame.Parent = frame
+
+	local loadingCorner = Instance.new("UICorner")
+	loadingCorner.CornerRadius = UDim.new(0, 6)
+	loadingCorner.Parent = loadingFrame
+
+	-- Create Green Bar
+	local progressBar = Instance.new("Frame")
+	progressBar.Size = UDim2.new(0, 0, 1, 0)
+	progressBar.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
+	progressBar.BorderSizePixel = 0
+	progressBar.Parent = loadingFrame
+
+	local progressCorner = Instance.new("UICorner")
+	progressCorner.CornerRadius = UDim.new(0, 6)
+	progressCorner.Parent = progressBar
+
+	-- Loading Text
+	local loadingText = Instance.new("TextLabel")
+	loadingText.Size = UDim2.new(1, 0, 0, 25)
+	loadingText.Position = UDim2.new(0, 0, 1.1, 0)
+	loadingText.BackgroundTransparency = 1
+	loadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+	loadingText.TextStrokeTransparency = 0.3
+	loadingText.TextSize = 16
+	loadingText.Font = Enum.Font.Gotham
+	loadingText.Text = "Loading... 0%"
+	loadingText.Parent = frame
+
+	---------------------------------------------------------
+	-- Simulate 2-minute loading (100 steps = 120 seconds)
+	---------------------------------------------------------
+	for i = 1, 100 do
+		progressBar:TweenSize(
+			UDim2.new(i / 100, 0, 1, 0),
+			Enum.EasingDirection.Out,
+			Enum.EasingStyle.Linear,
+			1.2, -- same as wait time
+			true
+		)
+		loadingText.Text = "Loading Please wait... " .. i .. "%"
+		task.wait(1.2)
 	end
-end)
-			end
-		end)
-	end
-end)
 
-frame.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-		dragInput = input
-	end
-end)
-
-UIS.InputChanged:Connect(function(input)
-	if input == dragInput and dragging then
-		update(input)
-	end
-end)
-
--- Create spam text holder
-local spamFolder = Instance.new("Folder", gui)
-spamFolder.Name = "SpamTexts"
-
-local spamming = false
-
--- ⚙️ SOUND SETUP
-local spamSound = Instance.new("Sound")
-spamSound.SoundId = "rbxassetid://2130284653"
-spamSound.Volume = 1
-spamSound.Parent = gui
-
--- Create a container for spam messages
-local spamContainer = Instance.new("Frame")
-spamContainer.Size = UDim2.new(0, 500, 0, 300)
-spamContainer.Position = UDim2.new(0.5, -250, 0.8, -150)
-spamContainer.BackgroundTransparency = 1
-spamContainer.Parent = gui
-
--- UIListLayout to organize spam messages bottom → top
-local layout = Instance.new("UIListLayout")
-layout.Padding = UDim.new(0, 4)
-layout.FillDirection = Enum.FillDirection.Vertical
-layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-layout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-layout.Parent = spamContainer
-
--- Function to spawn spam messages
-local function spamText()
-	while spamming do
-		local txt = Instance.new("TextLabel")
-		txt.Size = UDim2.new(0, 400, 0, 25)
-		txt.BackgroundTransparency = 1
-		txt.Text = "Please wait a few seconds before trying to buy another brainrot"
-		txt.TextColor3 = Color3.fromRGB(255, 0, 0)
-		txt.TextSize = 18
-		txt.Font = Enum.Font.GothamBold
-		txt.TextTransparency = 0
-		txt.Parent = spamContainer
-
-		spamSound:Play()
-
-		-- Smooth fade out + disappear after 0.5s
-		task.spawn(function()
-			task.wait(0.3)
-			for i = 0, 1, 0.1 do
-				if txt and txt.Parent then
-					txt.TextTransparency = i
-				end
-				task.wait(0.90)
-			end
-			if txt and txt.Parent then
-				txt:Destroy()
-			end
-		end)
-
-		task.wait(0.2)
-	end
-end
-
--- Button control
-button.MouseButton1Click:Connect(function()
-	if not spamming then
-		spamming = true
-		button.Text = "Stop Auto Buy"
-		button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-		task.spawn(spamText)
-	else
-		spamming = false
-		button.Text = "Start Buy Buy"
-		button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
-	end
-end)
-		txt.TextSize = 30
-		txt.Font = Enum.Font.GothamBold
-		txt.TextTransparency = 0
-		txt.Parent = spamContainer
-
-		spamSound:Play()
-
-		-- Smooth fade out + disappear after 0.5s
-		task.spawn(function()
-			task.wait(0.3)
-			for i = 0, 1, 0.1 do
-				if txt and txt.Parent then
-					txt.TextTransparency = i
-				end
-				task.wait(0.90)
-			end
-			if txt and txt.Parent then
-				txt:Destroy()
-			end
-		end)
-
-		task.wait(0.2)
-	end
-end
-
--- Button control
-button.MouseButton1Click:Connect(function()
-	if not spamming then
-		spamming = true
-		button.Text = "Stop Auto Buy"
-		button.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-		task.spawn(spamText)
-	else
-		spamming = false
-		button.Text = "Start Buy Buy"
-		button.BackgroundColor3 = Color3.fromRGB(0, 255, 100)
-	end
+	---------------------------------------------------------
+	-- Done Loading
+	---------------------------------------------------------
+	loadingText.Text = "✅ Auto Buy Started!"
+	button.Text = "Running..."
+	button.BackgroundColor3 = Color3.fromRGB(0, 200, 80)
+	progressBar.BackgroundColor3 = Color3.fromRGB(0, 200, 80)
+	button.Active = false -- permanently disable
+	button.AutoButtonColor = false -- no hover effect
+	print("✅ Auto Buy fully started!")
 end)
